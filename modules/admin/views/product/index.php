@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Создать товар', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
     <p>
-        <?php $form = ActiveForm::begin(); ?>
+    <?php ActiveForm::begin(); ?>
         <?=Html::checkboxList('colummVisible',$colummVisible,
         ['0'=>'CheckboxColumn','1'=>'SerialColumn','2'=>'Изоображение','3'=>'SKU',
         '4'=>'Название','5'=>'Кол-во на складе','6'=>'Тип товара','7'=>'ActionColumn'],['class'=>'form-control float-right']);?>
