@@ -9,12 +9,14 @@ use app\modules\admin\controllers\AdminController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
+use app\modules\admin\models\PostSearch;
 
 /**
  * ProductController implements the CRUD actions for Product model.
  */
 class ProductController extends AdminController
 {
+
     /**
      * {@inheritdoc}
      */
@@ -25,6 +27,7 @@ class ProductController extends AdminController
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'multi-delete' => ['POST'],
                 ],
             ],
         ];
@@ -40,9 +43,17 @@ class ProductController extends AdminController
             'query' => Product::find(),
         ]);
 
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);
+        $searchModel = new PostSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->post());
+
+        $colummVisible =  Yii::$app->request->post('colummVisible');       
+
+            return $this->render('index', [
+                'dataProvider' => $dataProvider,
+                'searchModel' => $searchModel,
+                'colummVisible' => $colummVisible,
+            ]);
+
     }
 
     /**
@@ -150,6 +161,17 @@ class ProductController extends AdminController
         return $this->redirect(['index']);
     }
 
+    public function actionMultiDelete()
+    {
+        $selection=(array)Yii::$app->request->post('selection');
+        foreach($selection as $id){
+            $this->findModel($id)->delete();
+        }
+
+        return $this->redirect(['index']);
+    }
+
+
     /**
      * Finds the Product model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -165,4 +187,5 @@ class ProductController extends AdminController
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }

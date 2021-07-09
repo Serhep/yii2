@@ -16,6 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
+    <?= Html::a('<- К товарам', ['index'], ['class' => 'btn btn-success']) ?>
         <?= Html::a('Изменить', ['update', 'id' => $model->sku], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Удалить', ['delete', 'id' => $model->sku], [
             'class' => 'btn btn-danger',
@@ -30,7 +31,11 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'sku',
-            'image',
+            ['attribute' => 'image',
+                'format' => 'html',    
+                'value' => function ($data) {
+                    return Html::img(Yii::getAlias('@web').'/images/products/small/'. $data['image']);
+                }],
             'name',
             'quantity',
             'waretype',

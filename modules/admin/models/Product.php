@@ -46,6 +46,7 @@ class Product extends \yii\db\ActiveRecord
             [['name', 'waretype'], 'string', 'max' => 50],
             ['image', 'image', 'extensions' => 'png, jpg, gif'],
             [['sku'], 'unique'],
+            [['searchstring'], 'safe'],
         ];
     }
 

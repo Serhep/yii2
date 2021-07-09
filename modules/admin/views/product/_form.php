@@ -25,8 +25,6 @@ use yii\helpers\ArrayHelper;
             $img = Yii::getAlias('@webroot') . '/images/products/source/' .  $model->image;
             if (is_file($img)) {
                 $url = Yii::getAlias('@web') . '/images/products/small/' .  $model->image;
-                /*echo 'Уже загружено ', Html::a('изображение', $url, ['target' => '_blank']);
-                echo $form->field($model,'remove')->checkbox();*/
                 echo Html::img($url);
             }
         }
