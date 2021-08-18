@@ -204,5 +204,46 @@ class Allegro extends Product
         return $response;
     }
 
+    public function del_offer($offer_id, $token)
+    {
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, "https://api.allegro.pl.allegrosandbox.pl/sale/offers/".$offer_id);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+        curl_setopt($ch, CURLOPT_HEADER, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer ".$token,
+            "Accept: application/vnd.allegro.public.v1+json",
+            'Accept-Language: en-US'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $response = curl_exec($ch);
+
+        curl_close($ch);
+
+        return $response;
+    }
+    public function active_offer($id, $offer, $token)
+    {
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, "https://api.allegro.pl.allegrosandbox.pl/sale/product-offers/".$id);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $offer);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer ".$token,
+                                                            "Accept: application/vnd.allegro.beta.v2+json",
+                                                            "Content-Type: application/vnd.allegro.beta.v2+json"));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $response = curl_exec($ch);
+
+        curl_close($ch);
+
+        return $response;
+    }
+
+
 
 }

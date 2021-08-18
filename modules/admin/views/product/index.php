@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\grid\GridView;
 use yii\widgets\ActiveForm;
 
@@ -18,6 +19,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a('Создать товар', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Категории', ['./category'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Offers', ['./offer'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Войти в Allegro', 'https://allegro.pl.allegrosandbox.pl/auth/oauth/authorize?response_type=code&client_id='.Yii::$app->params['allegroCID'].'&redirect_uri='.Url::to('@web','https'), ['class' => 'btn btn-success']) ?>
+        <?php
+        $tok = $_SESSION['allanswer'];
+        if($tok['access_token']) echo 'Авторизован на Allegro!'; else echo 'Не авторизован на Allegro!';?> 
+
+
     </p>
     <p>
     <?php ActiveForm::begin(); ?>
@@ -36,10 +45,13 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php ActiveForm::end(); ?>
     </p>
 
-    
+
     <?=Html::beginForm(['multi-delete'],'post');?>
 
     <?=Html::submitButton('Удалить выбранное', ['class' => 'btn btn-danger',]);?>
+    <?=Html::submitButton('Выгрузить на Allegro', ['class' => 'btn btn-info', 'name' => 'output_toall', 'value' => 'out','formaction' => Url::to('@web/admin/product','https'),]);?> 
+    <?=Html::submitButton('Заказы на Allegro', ['class' => 'btn btn-info', 'name' => 'orders', 'value' => 'get','formaction' => Url::to('@web/admin/product','https'),]);?>
+    <?php echo '<br/>'; print_r($ok);?>       
     <p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -53,7 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'visible' => isset($colummVisible)?!(in_array('1',$colummVisible)):'1',
             ],
             [
-                'attribute' => 'SerialColumn',
+                'attribute' => 'Image',
                 'format' => 'html',    
                 'value' => function ($data) {
                     return Html::img(Yii::getAlias('@web').'/images/products/small/'. $data['image']);
@@ -71,6 +83,10 @@ $this->params['breadcrumbs'][] = $this->title;
             [   
                 'attribute' => 'quantity',
                 'visible' => isset($colummVisible)?!(in_array('5',$colummVisible)):'1',
+            ],
+            [   
+                'attribute' => 'price',
+                'visible' => isset($colummVisible)?!(in_array('6',$colummVisible)):'1',
             ],
             [   
                 'attribute' => 'waretype',

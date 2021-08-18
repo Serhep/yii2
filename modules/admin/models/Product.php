@@ -41,12 +41,13 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['sku', 'name', 'quantity', 'waretype'], 'required'],
-            [['sku', 'quantity'], 'integer'],
+            [['sku', 'name', 'quantity', 'waretype', 'price'], 'required'],
+            [['sku', 'quantity', 'price'], 'integer'],
             [['name', 'waretype'], 'string', 'max' => 50],
             ['image', 'image', 'extensions' => 'png, jpg, gif'],
             [['sku'], 'unique'],
             [['searchstring'], 'safe'],
+            [['pdodlist'], 'safe'],
         ];
     }
 
@@ -60,6 +61,7 @@ class Product extends \yii\db\ActiveRecord
             'image' => 'Изображение',
             'name' => 'Название',
             'quantity' => 'Кол-во на складе',
+            'price' => 'Цена',
             'waretype' => 'Тип товара',
         ];
     }

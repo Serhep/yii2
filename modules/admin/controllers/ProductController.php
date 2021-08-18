@@ -3,6 +3,7 @@
 namespace app\modules\admin\controllers;
 
 use Yii;
+use yii\helpers\Url;
 use app\modules\admin\models\Product;
 use yii\data\ActiveDataProvider;
 use app\modules\admin\controllers\AdminController;
@@ -10,6 +11,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 use app\modules\admin\models\PostSearch;
+use app\modules\admin\models\Allegro;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -46,12 +48,60 @@ class ProductController extends AdminController
         $searchModel = new PostSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->post());
 
-        $colummVisible =  Yii::$app->request->post('colummVisible');       
+        $colummVisible =  Yii::$app->request->post('colummVisible');   
+        
+        $allcode = Yii::$app->request->get('code');
+
+
+
+        $allanswer = null;
+        $ok = null;
+        //$_SESSION['allanswer'] = $allanswer;
+        
+        if($allcode){
+            $ch = curl_init();
+
+            curl_setopt($ch, CURLOPT_URL, "https://allegro.pl.allegrosandbox.pl/auth/oauth/token");
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=authorization_code&code=".$allcode."&redirect_uri=".Url::to('@web/admin/product','https'));
+            curl_setopt($ch, CURLOPT_HEADER, 1);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Basic ".base64_encode(Yii::$app->params['allegroCID'].':'.Yii::$app->params['allegroCS'])));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+            $resp = curl_exec($ch);
+
+            curl_close($ch);
+
+            $allanswer = Allegro::array_json($resp);
+
+            session_start();
+            $_SESSION['allanswer'] = $allanswer;
+
+        }
+
+        if(Yii::$app->request->post('output_toall')=='out') {
+            
+            $prodlist = Allegro::prod_json();
+            $alleg = $_SESSION['allanswer']; 
+            $ok = Allegro::output_prod($prodlist, $alleg['access_token']);
+            //$ok = $prodlist;
+        }
+
+        if(Yii::$app->request->post('orders')=='get') {
+            
+            $alleg = $_SESSION['allanswer'];
+            $ok = Allegro::order_list($alleg['access_token']);
+
+        }
+
+
 
             return $this->render('index', [
                 'dataProvider' => $dataProvider,
                 'searchModel' => $searchModel,
                 'colummVisible' => $colummVisible,
+                'allanswer' => $allanswer,
+                'ok' => $ok,
             ]);
 
     }
