@@ -2,12 +2,32 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\widgets\ActiveForm;
+
 /* @var $this yii\web\View
  * @var $dataProvider
  * @var $ok
+ * @var $hidden = 'none'
+ * @var $model
+ * @var $edit
  */
 ?>
     <h1>Offers</h1>
+
+    <?php if(!empty($model)) {
+    echo '<div style = "display:'.($hidden == "block" ? $hidden : "none").'; position:absolute; z-index: 10; background:white; left:25%; top:25%;">';
+        echo '<div class="card" style = "padding: 10px; margin: 10px; border: 1px solid #bbbbbb;">
+            <div class="card-body">
+                <h4 class="card-title">Edit '.($edit=='quant'?"Quantity":"Price").'</h4>';
+                $form = ActiveForm::begin(['action' => 'offer-edit?id='.$model->offer_id.'&edit='.$edit]);?>
+                    <?= $form->field($model, $edit=='quant'?'available':'price')->textInput()->label($edit=='quant'?"Quantity":"Price")?>
+                    <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+                    <?= Html::submitButton('Cancel', ['class' => 'btn btn-info', 'name' => 'cancel', 'value' => 'ok','formaction' => 'offer-edit?id='.$model->offer_id.'&edit='.$edit,]); ?>
+                <?php ActiveForm::end();
+        echo    '</div>
+        </div>
+    </div>';
+    }?>
 
     <?=Html::a('Get offers', ['get-offers'], ['class' => 'btn btn-success'])?>
     <p></p>
@@ -34,29 +54,40 @@ use yii\grid\GridView;
             ],
             [
                 'attribute' => 'available',
+                'format' => 'raw',
+                'value' => function ($data) {
+                    return Html::a($data->available, ['offer-edit', 'id' => $data->offer_id, 'edit' => 'quant'] );
+                }
             ],
             [
                 'attribute' => 'price',
+                'format' => 'raw',
+                'value' => function ($data) {
+                    return Html::a($data->price, ['offer-edit', 'id' => $data->offer_id, 'edit' => 'price'] );
+                }
             ],
             [
                 'attribute' => 'format',
             ],
             [
                 'attribute' => 'status',
-                'format' => 'raw',
-                'value' => function ($data) {
-                        if($data->status != 'ACTIVE') {
-                            return $data->status.'  '.Html::a('Activate?', ['activate', 'id' => $data->offer_id], ['class'=>'btn btn-info btn-sm']);
-                        }
-                        else{
-                            return $data->status;
-                        }
-                },
-
             ],
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{delete}',
+                'template' => '{update} {delete}',
+                'buttons' => [
+                        'update' => function ($url, $model) {
+                            if($model->status == 'ACTIVE'){
+                                return Html::a(' END', ['publicate', 'id' => $model->offer_id, 'stat' => 'ENDED'], ['class' => 'glyphicon glyphicon-stop btn btn-primary btn-xs']);
+                                }
+                            if($model->status == 'INACTIVE'||$model->status == 'ENDED'){
+                                return Html::a(' ACTIVATE', ['publicate', 'id' => $model->offer_id, 'stat' => 'ACTIVE'], ['class' => 'glyphicon glyphicon-ok btn btn-success btn-xs']);
+                                }
+                        },
+                        'delete' => function ($url, $model) {
+                            return $model->status == 'INACTIVE' ? Html::a(' REMOVE', ['delete', 'id' => $model->offer_id], ['class' => 'glyphicon glyphicon-trash btn btn-danger btn-xs']) : '';
+                        },
+                ]
             ],
         ],
     ]);
@@ -105,10 +136,9 @@ use yii\grid\GridView;
     <?php }?>
 
     <?php if(empty($ok['errors'])&&isset($ok['id'])){
-        echo '<h3>The offer id: '.$_GET['id'].' is activated</h3>';?>
+        echo '<h3>The offer id: '.$_GET['id'].' status changed!</h3>';?>
     <?php }?>
 
-
-<pre><?php print_r($ok);?></pre>
+<p><?php //print_r($ok);?></p>
 
 

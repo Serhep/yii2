@@ -15,6 +15,7 @@ use Yii;
  * @property string $price
  * @property string $format
  * @property string $status
+ * @property string $structure
  */
 class Offer extends \yii\db\ActiveRecord
 {

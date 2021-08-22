@@ -134,10 +134,11 @@ class Allegro extends Product
 
         $ch = curl_init();
 
-            curl_setopt($ch, CURLOPT_URL, "https://api.allegro.pl.allegrosandbox.pl/sale/shipping-rates");
+            curl_setopt($ch, CURLOPT_URL, "https://api.allegro.pl.allegrosandbox.pl/order/checkout-forms");
             curl_setopt($ch, CURLOPT_HEADER, 1);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer ".$token,
-                                                        "Accept: application/vnd.allegro.public.v1+json"));
+                                                        "Accept: application/vnd.allegro.public.v1+json",
+                                                        'Accept-Language: en-US'));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
             $response = curl_exec($ch);
@@ -185,12 +186,12 @@ class Allegro extends Product
         return $response;
     }
 
-    public function get_offers($token)
+    public function get_offers($id,$token)
     {
 
         $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, "https://api.allegro.pl.allegrosandbox.pl/sale/offers");
+        curl_setopt($ch, CURLOPT_URL, "https://api.allegro.pl.allegrosandbox.pl/sale/offers/".($id?:""));
         curl_setopt($ch, CURLOPT_HEADER, 1);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer ".$token,
             "Accept: application/vnd.allegro.public.v1+json",
@@ -223,7 +224,7 @@ class Allegro extends Product
 
         return $response;
     }
-    public function active_offer($id, $offer, $token)
+    public function public_offer($id, $offer, $token)
     {
 
         $ch = curl_init();

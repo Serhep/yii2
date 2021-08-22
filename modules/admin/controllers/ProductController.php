@@ -52,8 +52,6 @@ class ProductController extends AdminController
         
         $allcode = Yii::$app->request->get('code');
 
-
-
         $allanswer = null;
         $ok = null;
         //$_SESSION['allanswer'] = $allanswer;
@@ -87,15 +85,6 @@ class ProductController extends AdminController
             //$ok = $prodlist;
         }
 
-        if(Yii::$app->request->post('orders')=='get') {
-            
-            $alleg = $_SESSION['allanswer'];
-            $ok = Allegro::order_list($alleg['access_token']);
-
-        }
-
-
-
             return $this->render('index', [
                 'dataProvider' => $dataProvider,
                 'searchModel' => $searchModel,
@@ -103,6 +92,18 @@ class ProductController extends AdminController
                 'allanswer' => $allanswer,
                 'ok' => $ok,
             ]);
+
+    }
+
+    public function actionGetOrders(){
+
+        $alleg = $_SESSION['allanswer'];
+        $ok = Allegro::order_list($alleg['access_token']);
+        $ok = Allegro::array_json($ok);
+
+        return $this->render('index', [
+            'ok' => $ok,
+        ]);
 
     }
 
@@ -196,6 +197,8 @@ class ProductController extends AdminController
             'model' => $model,
         ]);
     }
+
+
 
     /**
      * Deletes an existing Product model.

@@ -2,12 +2,14 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\grid\GridView;
-use yii\widgets\ActiveForm;
+//use yii\grid\GridView;
+//use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-/* @var $form yii\widgets\ActiveForm */
+/* @var $form yii\widgets\ActiveForm
+ * @var $ok
+ */
 
 $this->title = 'Товар';
 $this->params['breadcrumbs'][] = $this->title;
@@ -18,16 +20,17 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Создать товар', ['create'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a('Категории', ['./category'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Categories', ['./category'], ['class' => 'btn btn-success']) ?>
         <?= Html::a('Offers', ['./offer'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Orders', ['get-orders'], ['class' => 'btn btn-success']) ?>
         <?= Html::a('Войти в Allegro', 'https://allegro.pl.allegrosandbox.pl/auth/oauth/authorize?response_type=code&client_id='.Yii::$app->params['allegroCID'].'&redirect_uri='.Url::to('@web','https'), ['class' => 'btn btn-success']) ?>
         <?php
         $tok = $_SESSION['allanswer'];
-        if($tok['access_token']) echo 'Авторизован на Allegro!'; else echo 'Не авторизован на Allegro!';?> 
-
-
+        if($tok['access_token']) echo 'Авторизован на Allegro!'; else echo 'Не авторизован на Allegro!';?>
     </p>
+    <pre><?php print_r($ok);?></pre>
+
+<?php /*
     <p>
     <?php ActiveForm::begin(); ?>
         <?=Html::checkboxList('colummVisible',$colummVisible,
@@ -49,8 +52,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?=Html::beginForm(['multi-delete'],'post');?>
 
     <?=Html::submitButton('Удалить выбранное', ['class' => 'btn btn-danger',]);?>
-    <?=Html::submitButton('Выгрузить на Allegro', ['class' => 'btn btn-info', 'name' => 'output_toall', 'value' => 'out','formaction' => Url::to('@web/admin/product','https'),]);?> 
-    <?=Html::submitButton('Заказы на Allegro', ['class' => 'btn btn-info', 'name' => 'orders', 'value' => 'get','formaction' => Url::to('@web/admin/product','https'),]);?>
     <?php echo '<br/>'; print_r($ok);?>       
     <p>
     <?= GridView::widget([
@@ -100,6 +101,6 @@ $this->params['breadcrumbs'][] = $this->title;
     ]); ?>
     </p>
  <?= Html::endForm();?> 
-
+*/?>
 
 </div>
